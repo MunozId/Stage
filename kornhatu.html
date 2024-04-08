@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Kornhatu</title>
+<style>
+   
+    img{
+        display: none;
+    }
+</style>
+
+    </head>
+    <body onclick="detLoc(event);">
+        <canvas id="canvas" width="1200" height="680" ></canvas>
+        <td><img src="pion impair base.png" id="impair" alt="p"></td>
+        <td><img src="pion pair base.png" id="pair" alt="i"></td>
+        
+
+        <script language=javascript defer>
+            
+            a=50;
+            x0=100;
+            y0=100;
+            ech=1;
+            board=new Array();
+            // on crée le plateau et on remplit au préalable par des cases vides
+            for (i=0 ; i<10 ; i++){
+                board[i]=new Array();
+                for (j=0 ; j<20 ; j++){
+                    
+                    board[i][j]=0;
+                }
+            }
+            joueur=1; // no du joueur qui joue
+            nbPoints=new Array();
+            nbPoints[1]=0;  // nombre de point du joueur 1
+            nbPoints[2]=0;
+            isFinished=false;
+            var ctx = document.getElementById('canvas').getContext('2d');
+            pionPair=document.getElementById("pair");
+            pionImpair=document.getElementById("impair");
+            hauteurPion=pair.height*a/pair.width;
+            origine=new Array();
+            origine=[4,3,2,1,0,0,1,2,3,4];
+            longueur=new Array();
+            longueur=[11,13,15,17,19,19,17,15,13,11];
+            draw();
+
+        function draw(){
+            
+            for (var i=0; i<origine.length ; i++){
+                y=y0+i*a*Math.sqrt(3)/2;
+                for (var j=0 ; j< longueur[i] ; j++){
+                    x=x0+(origine[i]+j)*a/2;
+                    jj=j;
+                    if (i>4){jj++;}
+                    if (jj%2==0){
+                        ctx.drawImage(pair,x,y,a,hauteurPion);
+                    }
+                    else{
+                        ctx.drawImage(impair,x,y,a,hauteurPion);
+                    }
+
+                }
+            }
+        }
+            function isInZone(x0,y0,x1,y1,xC,yC){
+                var a=y1-y0;
+                var b=x0-x1;
+                var c=-x0*a-y0*b;
+                if (a==0){
+                    if (b*(a*xC+b*yC+c)<0){
+                    return true;
+                }
+                else{
+                    return false;
+                } 
+                }
+                else{
+                if (b*(a*xC+b*yC+c)>0){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            }
+
+            function detLoc(event){
+                var canevas = document.getElementById('canvas');
+                rect = canevas.getBoundingClientRect();
+                var x = event.clientX-rect.left;
+                var y = event.clientY-rect.top;
+                
+                for (var i=0; i<origine.length ; i++){
+                yCoin=y0+i*a*Math.sqrt(3)/2;
+                for (var j=0 ; j< longueur[i] ; j++){
+                    xCoin=x0+(origine[i]+j)*a/2;
+                    jj=j;
+                    if (i>4){jj++;}
+                    if (jj%2==0){
+                        /*ctx.drawImage(pair,x,y,a,hauteurPion);*/
+
+                        if (isInTriangle(xCoin+a/2,yCoin,xCoin+a,yCoin+a*Math.sqrt(3)/2,xCoin,yCoin+a*Math.sqrt(3)/2,x,y)){
+                            console.log(i+" "+j);
+                        }
+                    }
+                    else{
+                        /*ctx.drawImage(impair,x,y,a,hauteurPion);*/
+                        if (isInTriangle(xCoin,yCoin,xCoin+a,yCoin,xCoin+a/2,yCoin+a*Math.sqrt(3)/2,x,y)){
+                            console.log(i+" "+j);
+                        }
+                    }
+
+                }
+            }   
+
+                
+                /*console.log(i+" "+j);*/
+                }
+            function isInTriangle(x0,y0,x1,y1,x2,y2,x,y){
+                ms1=0;ms2=0;ms3=0;
+                
+                if (isInZone(x0,y0,x1,y1,x,y)){
+                    ms1++;
+                }
+                else{
+                    ms1--;
+                }
+                
+                if (isInZone(x1,y1,x2,y2,x,y)){
+                    ms2++;
+                }
+                else{
+                    ms2--;
+                }
+                
+                if (isInZone(x2,y2,x0,y0,x,y)){
+                    ms3++;
+                }
+                else{
+                    ms3--;
+                }
+                total=ms1+ms2+ms3;
+                if (Math.abs(total)==3){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+             
+ </script>
+    </body>
+</html>
